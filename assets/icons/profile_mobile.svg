@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="13.4" height="20.1" viewBox="0 0 13.4 20.1">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#6c4f5b"/>
+      <stop offset="1" stop-color="#c17594"/>
+    </linearGradient>
+  </defs>
+  <g id="fi-sr-smartphone" transform="translate(-4)">
+    <path id="Path_40142" data-name="Path 40142" d="M13.213,0H8.188A4.193,4.193,0,0,0,4,4.188V13.4H17.4V4.188A4.193,4.193,0,0,0,13.213,0Z" fill="url(#linear-gradient)"/>
+    <path id="Path_40143" data-name="Path 40143" d="M4,18.838a4.193,4.193,0,0,0,4.188,4.188h5.025A4.193,4.193,0,0,0,17.4,18.838V18H4Zm6.7.838a.838.838,0,1,1-.838.838A.838.838,0,0,1,10.7,19.675Z" transform="translate(0 -2.925)" fill="url(#linear-gradient)"/>
+  </g>
+</svg>

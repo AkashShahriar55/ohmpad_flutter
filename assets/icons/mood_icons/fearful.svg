@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="57.056" height="57.056" viewBox="0 0 57.056 57.056">
+  <g id="emoji-fearful" transform="translate(-526.062 -488.456)">
+    <g id="Group_4238" data-name="Group 4238" transform="translate(514.246 476.64)">
+      <circle id="Ellipse_19" data-name="Ellipse 19" cx="28.528" cy="28.528" r="28.528" transform="translate(11.817 11.817)" fill="#ffd05d"/>
+      <g id="Group_4236" data-name="Group 4236" transform="translate(16.305 15.996)">
+        <path id="Path_8315" data-name="Path 8315" d="M601.927,524.432a28.533,28.533,0,0,1-38.965,39.682,28.531,28.531,0,1,0,38.965-39.682Z" transform="translate(-562.962 -524.432)" fill="#fdc453"/>
+      </g>
+      <g id="Group_4237" data-name="Group 4237" transform="translate(13.723 13.923)">
+        <path id="Path_8316" data-name="Path 8316" d="M557.217,547.671A26.486,26.486,0,0,1,604.7,531.525a26.489,26.489,0,1,0-43.963,29.347A26.364,26.364,0,0,1,557.217,547.671Z" transform="translate(-555.246 -518.239)" fill="#ffd77f"/>
+      </g>
+    </g>
+    <g id="Group_4242" data-name="Group 4242" transform="translate(536.107 506.586)">
+      <g id="Group_4240" data-name="Group 4240" transform="translate(0 0)">
+        <rect id="Rectangle_503" data-name="Rectangle 503" width="2.61" height="11.76" transform="translate(0 1.845) rotate(-44.999)" fill="#303030"/>
+        <rect id="Rectangle_504" data-name="Rectangle 504" width="2.61" height="11.76" transform="translate(8.316 0) rotate(44.999)" fill="#303030"/>
+      </g>
+      <g id="Group_4241" data-name="Group 4241" transform="translate(26.805 0)">
+        <rect id="Rectangle_505" data-name="Rectangle 505" width="2.61" height="11.76" transform="translate(0 1.845) rotate(-44.999)" fill="#303030"/>
+        <rect id="Rectangle_506" data-name="Rectangle 506" width="2.61" height="11.76" transform="translate(8.316 0) rotate(45)" fill="#303030"/>
+      </g>
+    </g>
+    <g id="Group_4243" data-name="Group 4243" transform="translate(549.439 517.279)">
+      <ellipse id="Ellipse_20" data-name="Ellipse 20" cx="5.152" cy="8.733" rx="5.152" ry="8.733" transform="translate(0 0)" fill="#695342"/>
+      <path id="Path_8317" data-name="Path 8317" d="M630.708,635.89a7.907,7.907,0,0,0-8.588.279c.929,2.28,2.481,3.774,4.24,3.774C628.189,639.943,629.794,638.326,630.708,635.89Z" transform="translate(-621.208 -622.476)" fill="#f06669"/>
+    </g>
+  </g>
+</svg>
