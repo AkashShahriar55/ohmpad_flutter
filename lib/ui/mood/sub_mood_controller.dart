@@ -15,7 +15,7 @@ class SubMoodController extends GetxController {
   Rx<String> moodName = Rx<String>("");
   MusicListModel? music;
   MoodModel? data;
-  FirebaseAnalytics analytics = FirebaseAnalytics();
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   var dbRef = FirebaseFirestore.instance.collection(NetworkParams.TABLE_USER);
 
   moveToNextScreen(String finalMood) {

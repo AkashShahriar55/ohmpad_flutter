@@ -9,19 +9,23 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:ohm_pad/ui/others/cms_bindings.dart';
 
+import 'BluetoothController.dart';
 import 'app_theme/app_theme.dart';
 import 'notification/push_notification.dart';
 import 'routes/app_pages.dart';
 import 'utils/constants/app_constants.dart';
 import 'utils/constants/color_constants.dart';
 import 'utils/size_utils.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: ColorConstants.BG_LIGHT_WHITE,
       statusBarIconBrightness: Brightness.dark));
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   runApp(
     MyApp()
@@ -30,12 +34,14 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  FirebaseAnalytics analytics = FirebaseAnalytics();
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  final BluetoothController bluetoothController = Get.put(BluetoothController());
+
 
   @override
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser != null) {
-      analytics.setUserId(FirebaseAuth.instance.currentUser!.uid);
+      analytics.setUserId(id:FirebaseAuth.instance.currentUser!.uid);
       analytics.setUserProperty(name: "UserId", value: FirebaseAuth.instance.currentUser!.uid);
     }
 

@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "867411993501",
-    "project_id": "ohmpad",
-    "storage_bucket": "ohmpad.appspot.com"
+    "project_number": "339204091699",
+    "project_id": "ohmpad-9933b",
+    "storage_bucket": "ohmpad-9933b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:867411993501:android:6274b518458be6aa740574",
+        "mobilesdk_app_id": "1:339204091699:android:9a50cd9f34229fa3051846",
         "android_client_info": {
           "package_name": "com.app.ohm_pad"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "867411993501-6o9k8ql3k8b6dnbf2rrkm14qjgdegg49.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA-GLtXZC24vnuM_gdd4Mj-oU6fPZxkHS0"
+          "current_key": "AIzaSyDk9RbgK9NkWQpgUtMa-55lWP2Yz54IeQc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "867411993501-6o9k8ql3k8b6dnbf2rrkm14qjgdegg49.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

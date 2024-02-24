@@ -6,8 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 // import 'package:flutter_ble_lib/flutter_ble_lib.dart' as ble_lib;
-import 'package:flutter_blue/flutter_blue.dart';
+
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart'
     as serial;
 import 'package:get/get.dart';
@@ -40,7 +41,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   late serial.FlutterBluetoothSerial _bluetooth;
 
   //Ble
-  FlutterBlue flutterBlue = FlutterBlue.instance;
+  // FlutterBlue flutterBlue = FlutterBlue.instance;
   BluetoothState state = BluetoothState.unknown;
   late StreamSubscription<ScanResult>? scanSubScription;
   RxList<MusicModel> musicList = <MusicModel>[].obs;
@@ -305,9 +306,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   checkBluetooth() async {
-    print('TAG isAvailable ${await flutterBlue.isAvailable}');
-    print('TAG isOn ${await flutterBlue.isOn}');
-    if (await flutterBlue.isAvailable && await flutterBlue.isOn) {
+    print('TAG isAvailable ${await FlutterBluePlus.isAvailable}');
+    print('TAG isOn ${await FlutterBluePlus.isOn}');
+    if (await FlutterBluePlus.isAvailable && await FlutterBluePlus.isOn) {
       isBluetoothConnected.value = true;
       // setLoading(false);
       //getPairedDevices();
@@ -356,7 +357,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   void initBluetoothSerial() {
     if (Platform.isAndroid) _bluetooth = serial.FlutterBluetoothSerial.instance;
 
-    flutterBlue.state.listen((event) {
+    FlutterBluePlus.state.listen((event) {
       if (event == BluetoothState.on) {
         setLoading(true);
         isBluetoothConnected.value = true;
@@ -382,11 +383,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       scanSubScription = null;
     });*/
 
-    flutterBlue.isScanning.listen((event) {
+    FlutterBluePlus.isScanning.listen((event) {
       print("TAG isScanning : $event");
       if (!event) {
-        scanSubScription = flutterBlue
-            .scan(allowDuplicates: false, scanMode: ScanMode.lowLatency)
+        scanSubScription = FlutterBluePlus
+            .scan()
+            // .scan(allowDuplicates: false, scanMode: ScanMode.lowLatency)
             .listen((event) {
           print("TAG found device : $event");
 

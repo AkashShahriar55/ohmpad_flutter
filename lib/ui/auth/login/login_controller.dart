@@ -24,7 +24,7 @@ class LoginController extends GetxController{
   String password = "";
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  FirebaseAnalytics analytics = FirebaseAnalytics();
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   var dbRef = FirebaseFirestore.instance.collection(NetworkParams.TABLE_USER);
 
   @override
@@ -89,7 +89,7 @@ class LoginController extends GetxController{
           // Get.offAndToNamed(Routes.SCAN_DEVICES);
           bool showHowToUse = await PreferenceManager.instance.showHowToUse();
           if (FirebaseAuth.instance.currentUser != null) {
-            analytics.setUserId(FirebaseAuth.instance.currentUser!.uid);
+            analytics.setUserId(id : FirebaseAuth.instance.currentUser!.uid);
             analytics.setUserProperty(name: "UserId", value: FirebaseAuth.instance.currentUser!.uid);
           }
           if (showHowToUse)

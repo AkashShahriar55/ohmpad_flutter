@@ -1,13 +1,17 @@
 package com.app.ohm_pad
 
+import android.Manifest
 import android.bluetooth.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.*
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import com.app.ohm_pad.BluetoothSupport.BluetoothChannel
 import com.app.ohm_pad.bluetooth_headset_connectivity.IBluetoothA2dp
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -21,6 +25,7 @@ import java.io.UnsupportedEncodingException
 import java.lang.reflect.Method
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 class MainActivity : FlutterActivity() {
 
@@ -65,6 +70,14 @@ class MainActivity : FlutterActivity() {
     private var isDeviceConnect: Boolean? = null
     var selectedBleDevice: BluetoothDevice? = null
 
+
+
+
+
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e(TAG, "onCreate")
@@ -90,103 +103,93 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        EventChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            STREAM_CONNECT_REQUEST
-        ).setStreamHandler(object : EventChannel.StreamHandler {
-            override fun onListen(arguments: Any?, events: EventSink?) {
-
-                Log.e(TAG, "EventChannel started $STREAM_CONNECT_REQUEST")
-
-                timerSubscription1 = Observable
-                    .interval(0, 1, TimeUnit.SECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { timer: Long? ->
-                            //Log.e(TAG, "getDiscovering : "+mBTAdapter.isDiscovering)
-                            if (isDeviceConnect != null)
-                                events?.success(isDeviceConnect)
-                        },
-                        { error: Throwable ->
-                            events?.error(
-                                "STREAM",
-                                "Error in processing observable",
-                                error.message
-                            )
-                        }
-                    ) { Log.w(TAG, "closing the timer observable") }
-
-            }
-
-            override fun onCancel(arguments: Any?) {
-                if (timerSubscription1 != null) {
-                    timerSubscription1!!.dispose()
-                    timerSubscription1 = null
-                }
-            }
-
-        })
-
-        EventChannel(flutterEngine.dartExecutor.binaryMessenger, STREAM).setStreamHandler(
-            object : EventChannel.StreamHandler {
-                override fun onListen(arguments: Any?, events: EventSink) {
-
-                    Log.e(TAG, "EventChannel started")
-
-                    timerSubscription = Observable
-                        .interval(0, 1, TimeUnit.SECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            { timer: Long? ->
-                                //Log.e(TAG, "getDiscovering : "+mBTAdapter.isDiscovering)
-                                if (!mBTAdapter.isDiscovering) {
-                                    events.success("Stop Scanning")
-                                    return@subscribe
-                                }
-
-                                temp.clear()
-                                temp.addAll(discoveryDeviceList)
-                                events.success(temp)
-                            },
-                            { error: Throwable ->
-                                events.error(
-                                    "STREAM",
-                                    "Error in processing observable",
-                                    error.message
-                                )
-                            }
-                        ) { Log.w(TAG, "closing the timer observable") }
-                }
-
-                override fun onCancel(arguments: Any?) {
-                    Log.e(TAG, "EventChannel stop")
-                    if (timerSubscription != null) {
-                        timerSubscription!!.dispose()
-                        timerSubscription = null
-                    }
-                }
-            }
-        )
 
 
-        MethodChannel(flutterEngine.dartExecutor, CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method.equals("Discovery", ignoreCase = true)) {
-                Log.e(TAG, "discovery started")
-                discoveryDeviceList.clear()
-                detectedDevices.clear()
-                discover()
-                result.success("discovery started")
-            } else if (call.method.equals("CheckConnected", ignoreCase = true)) {
-                var connected: Boolean = isBluetoothHeadsetConnected()
-                result.success(connected)
-            } else if (call.method.equals("StopDiscovery", ignoreCase = true)) {
-                stopDiscovery()
-            } else if (call.method.equals("ConnectToDevice", ignoreCase = true)) {
-                Log.e(TAG, "Connect " + call.argument<Any>("text"))
-                connectToDevice(call.argument<Any>("text") as String)
-                result.success("Connecting")
-            }
+
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            BluetoothChannel.init(flutterEngine.dartExecutor,lifecycle,context)
+        }else{
+            Toast.makeText(this,"Permission is not given",Toast.LENGTH_LONG).show()
         }
+
+
+
+
+
+
+//
+//
+//
+//
+//        EventChannel(flutterEngine.dartExecutor.binaryMessenger, STREAM).setStreamHandler(
+//            object : EventChannel.StreamHandler {
+//                override fun onListen(arguments: Any?, events: EventSink) {
+//
+//                    Log.e(TAG, "EventChannel started")
+//
+//                    timerSubscription = Observable
+//                        .interval(0, 1, TimeUnit.SECONDS)
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(
+//                            { timer: Long? ->
+//                                //Log.e(TAG, "getDiscovering : "+mBTAdapter.isDiscovering)
+//                                if (!mBTAdapter.isDiscovering) {
+//                                    events.success("Stop Scanning")
+//                                    return@subscribe
+//                                }
+//
+//                                temp.clear()
+//                                temp.addAll(discoveryDeviceList)
+//                                events.success(temp)
+//                            },
+//                            { error: Throwable ->
+//                                events.error(
+//                                    "STREAM",
+//                                    "Error in processing observable",
+//                                    error.message
+//                                )
+//                            }
+//                        ) { Log.w(TAG, "closing the timer observable") }
+//                }
+//
+//                override fun onCancel(arguments: Any?) {
+//                    Log.e(TAG, "EventChannel stop")
+//                    if (timerSubscription != null) {
+//                        timerSubscription!!.dispose()
+//                        timerSubscription = null
+//                    }
+//                }
+//            }
+//        )
+//
+//
+//
+//
+//
+//
+//        MethodChannel(flutterEngine.dartExecutor, CHANNEL).setMethodCallHandler { call, result ->
+//            if (call.method.equals("Discovery", ignoreCase = true)) {
+//                Log.e(TAG, "discovery started")
+//                discoveryDeviceList.clear()
+//                detectedDevices.clear()
+//                discover()
+//                result.success("discovery started")
+//            } else if (call.method.equals("CheckConnected", ignoreCase = true)) {
+//                var connected: Boolean = isBluetoothHeadsetConnected()
+//                result.success(connected)
+//            } else if (call.method.equals("StopDiscovery", ignoreCase = true)) {
+//                stopDiscovery()
+//            } else if (call.method.equals("ConnectToDevice", ignoreCase = true)) {
+//                Log.e(TAG, "Connect " + call.argument<Any>("text"))
+//                connectToDevice(call.argument<Any>("text") as String)
+//                result.success("Connecting")
+//            }
+//        }
     }
 
     private fun stopDiscovery() {

@@ -5,7 +5,9 @@ import 'package:ohm_pad/ui/splash/splash_controller.dart';
 import 'package:ohm_pad/utils/constants/icon_constants.dart';
 import 'package:ohm_pad/utils/size_utils.dart';
 
-class SplashScreen extends StatelessWidget {
+
+
+class SplashScreen extends StatelessWidget with WidgetsBindingObserver {
 
   SplashController _splashController = Get.find();
 
@@ -40,4 +42,14 @@ class SplashScreen extends StatelessWidget {
       ),
     );
   }
+
+
+
+
+
+
+
+
+
+
 }

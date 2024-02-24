@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
 import 'package:ohm_pad/custom_widget/bottom_sheet_drawer.dart';
 import 'package:ohm_pad/custom_widget/dialogs.dart';
@@ -74,6 +75,42 @@ class CommonUtils {
         : GetPlatform.isIOS
             ? Offset(0, SizeUtils.get(20))
             : Offset(0, SizeUtils.get(35));
+  }
+
+
+  static Future<void> tryToTurnOnBluetooth() async {
+    // show an error to the user, etc
+    // turn on bluetooth ourself if we can
+    // for iOS, the user controls bluetooth enable/disable
+    if (Platform.isAndroid) {
+      try{
+        await FlutterBluePlus.turnOn();
+      }catch(e){
+        if(e is FlutterBluePlusException){
+          showBluetoothDialog();
+        }
+      }
+
+    }
+  }
+
+  static Future<void>  showBluetoothDialog() async {
+    Get.defaultDialog(
+      title: "Bluetooth Required",
+      middleText: "Are you sure ? Without bluetooth you can't use some features!",
+      textConfirm: "No",
+      confirmTextColor: Colors.white,
+      textCancel: "Yes",
+      cancelTextColor: Colors.white,
+      onConfirm: () async {
+        await tryToTurnOnBluetooth();
+        Get.back();
+      },
+      onCancel: () {
+        Get.back(); // Dismiss the dialog
+      },
+    );
+
   }
 
   static String roundWithTwoDigit(String value){

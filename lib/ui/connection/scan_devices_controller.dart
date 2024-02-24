@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+// import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart'
     as serial;
 
@@ -10,10 +11,24 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:ohm_pad/custom_widget/dialogs.dart';
 import 'package:ohm_pad/routes/app_pages.dart';
+import 'package:ohm_pad/utils/common_utils.dart';
 import 'package:ohm_pad/utils/strings.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 enum ScreenStatus { SEARCH_BLE, DEVICE_NOT_FOUND, LIST_OF_BLES }
+
+
+const String BlUETOOTH_CHANNEL = "com.ohmPad/bluetooth_channel";
+const String METHOD_DISCOVERY = "Discovery";
+const String METHOD_CHECK_CONNECTED = "CheckConnected";
+const String METHOD_STOP_DISCOVERY = "StopDiscovery";
+const String METHOD_CONNECT_DEVICE = "ConnectToDevice";
+
+const String SCANNING_STARTED = "scan_started";
+
+
+const String STREAM_PAIRED_DEVICE = "com.ohmPad/paired_device_stream_request";
+const String STREAM_DISCOVERED_DEVICE = "com.ohmPad/discovered_device_stream_request";
 
 class ScanDevicesController extends GetxController with WidgetsBindingObserver {
   // channel and events iOS
@@ -29,9 +44,22 @@ class ScanDevicesController extends GetxController with WidgetsBindingObserver {
   static const streamConnectAndroid =
       const EventChannel('com.ohmPad/stream_connect_request');
 
+
+
+
   StreamSubscription? _broadCastSubscription;
   StreamSubscription? _subscriptionConnection;
-  FlutterBlue flutterBlue = FlutterBlue.instance;
+  // FlutterBlue flutterBlue = FlutterBlue.instance;
+
+
+
+  MethodChannel _bluetoothMethodChannelAndroid = MethodChannel(BlUETOOTH_CHANNEL);
+  EventChannel _streamDiscoveredDevices = EventChannel(STREAM_DISCOVERED_DEVICE);
+  EventChannel _streamPairedDevices = EventChannel(STREAM_PAIRED_DEVICE);
+
+
+
+
 
   //Bluetooth Vars
   serial.BluetoothState _bluetoothState = serial.BluetoothState.UNKNOWN;
@@ -51,20 +79,51 @@ class ScanDevicesController extends GetxController with WidgetsBindingObserver {
     screenStatus.value = ScreenStatus.SEARCH_BLE;
     isSearchingForBLEs.value = true;
     isSearchingForBLEs.refresh();
-    this.startDiscoveryiOS();
 
-    Future.delayed(Duration(seconds: 5), () {
-      this.stopDiscovery();
-      // disableListentDeviceStream();
-    });
+    this.startDiscovery();
+
+    // Future.delayed(Duration(seconds: 5), () {
+    //   this.stopDiscovery();
+    //   // disableListentDeviceStream();
+    // });
   }
 
+
+  Future<void> startDiscovery() async {
+
+    var status;
+    if(Platform.isAndroid){
+       status = await _bluetoothMethodChannelAndroid.invokeMethod(METHOD_DISCOVERY);
+    }else if(Platform.isIOS){
+       // TODO
+    }
+
+    print(status);
+
+
+    _streamDiscoveredDevices.receiveBroadcastStream().listen((event) {
+      print("event $event");
+      validateData(event);
+    });
+
+
+    // _streamPairedDevices.receiveBroadcastStream().listen((event) {
+    //   print("event $event");
+    //   validateData(event);
+    // });
+
+  }
+
+
+
+
+
   Future<void> enableBluetooth() async {
-    _jumpToSetting();
+    CommonUtils.tryToTurnOnBluetooth();
   }
 
   _jumpToSetting() {
-    AppSettings.openBluetoothSettings();
+    AppSettings.openAppSettings(type: AppSettingsType.bluetooth);
   }
 
   void stopDiscovery() {
@@ -78,14 +137,34 @@ class ScanDevicesController extends GetxController with WidgetsBindingObserver {
     }
   }
 
+
+
   checkBluetooth() async {
-    print('TAG isAvailable ${await flutterBlue.isAvailable}');
-    print('TAG isOn ${await flutterBlue.isOn}');
-    if (await flutterBlue.isAvailable && await flutterBlue.isOn) {
+
+
+
+
+    print('TAG isAvailable ${await FlutterBluePlus.isSupported}');
+    print('TAG isOn ${await FlutterBluePlus.isOn}');
+    if (await FlutterBluePlus.isAvailable && await FlutterBluePlus.isOn) {
       isBluetoothOn.value = true;
     } else {
       isBluetoothOn.value = false;
     }
+    isBluetoothOn.refresh();
+  }
+
+  StreamSubscription<BluetoothAdapterState>? bluetoothStatusSubscription;
+
+  _observeBluetoothStatus(){
+    bluetoothStatusSubscription = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
+      print(state);
+      if (state == BluetoothAdapterState.off) {
+        isBluetoothOn.value = false;
+      } else if(state == BluetoothAdapterState.on) {
+        isBluetoothOn.value = true;
+      }
+    });
     isBluetoothOn.refresh();
   }
 
@@ -280,8 +359,7 @@ class ScanDevicesController extends GetxController with WidgetsBindingObserver {
 
   @override
   void onInit() {
-    // TODO: implement onInit
-    checkBluetooth();
+    _observeBluetoothStatus();
     WidgetsBinding.instance!.addObserver(this);
     super.onInit();
   }
@@ -289,6 +367,11 @@ class ScanDevicesController extends GetxController with WidgetsBindingObserver {
   @override
   void onClose() {
     WidgetsBinding.instance!.removeObserver(this);
+    cleanObservers();
     super.onClose();
+  }
+
+  void cleanObservers() {
+    bluetoothStatusSubscription?.cancel();
   }
 }
